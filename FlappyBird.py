@@ -20,8 +20,8 @@ floorXPos = 0
 
 
 def drawFloor():
-    screen.blit(floorSurface, (floorXPos, height-70))
-    screen.blit(floorSurface, (floorXPos+width, height-70))
+    screen.blit(floorSurface, (floorXPos, height-50))
+    screen.blit(floorSurface, (floorXPos+width, height-50))
 
 
 
@@ -35,5 +35,7 @@ while True:
     screen.blit(bgSurface, (0,0))
     drawFloor()
     floorXPos -=1
+    if floorXPos <-width:
+        floorXPos =0
     clock.tick(60)
     pygame.display.update()
