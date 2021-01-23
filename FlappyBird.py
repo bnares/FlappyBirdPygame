@@ -11,14 +11,16 @@ clock = pygame.time.Clock()
 
 bgSurface = pygame.image.load("background-day.png").convert()
 floorSurface = pygame.image.load("base.png").convert()
-bird = pygame.image.load("bluebird-midflap.png").convert()
-birdPos = bird.get_rect(center = (width/2, height/2))
+birdSurface = pygame.image.load("bluebird-midflap.png").convert()
+birdRect = birdSurface.get_rect(center = (width/2, height/2))
 
-#bgSurface = pygame.transform.scale2x(bgSurface)
+
 
 #increment values
 
 floorXPos = 0
+gravity = 0.25
+birdMovement = 0
 
 
 def drawFloor():
@@ -36,12 +38,21 @@ while True:
             pygame.quit()
             sys.exit()
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                birdMovement = 0
+                birdMovement -=12
+
+
     screen.blit(bgSurface, (0,0))
     drawFloor()
     floorXPos -=1
     if floorXPos <-width:
         floorXPos =0
 
-    screen.blit(bird, birdPos)
+
+    birdRect.centery +=birdMovement
+    screen.blit(birdSurface, birdRect)
     clock.tick(60)
+    birdMovement+=gravity
     pygame.display.update()
