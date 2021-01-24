@@ -8,11 +8,20 @@ screen = pygame.display.set_mode((width,height))
 
 clock = pygame.time.Clock()
 
-
+#importy zdjec
 bgSurface = pygame.image.load("background-day.png").convert()
 floorSurface = pygame.image.load("base.png").convert()
 birdSurface = pygame.image.load("bluebird-midflap.png").convert()
 birdRect = birdSurface.get_rect(center = (width/2, height/2))
+pipeSurface = pygame.image.load("pipe-green.png").convert()
+
+
+#ustawiania timera w grze ktora co wyznaczony czas w milsek bedzie uruchamial jakies zdarzenie - pojawienie sie obrazka z rura
+
+SPAWNPIPE = pygame.USEREVENT  #USEREVENT dziala tak jak event loop,  zmienna spawnpipe to nosi nazwe tego wydarzenia
+pygame.time.set_timer(SPAWNPIPE, 1200)   #ustalenie co ile czasu wydarzenie spawnpipe bedzie sie powtarzalo
+
+
 
 
 
@@ -42,6 +51,9 @@ while True:
             if event.key == pygame.K_SPACE:
                 birdMovement = 0
                 birdMovement -=12
+
+        if event.type == SPAWNPIPE:
+            print("pipe")
 
 
     screen.blit(bgSurface, (0,0))
