@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 bgSurface = pygame.image.load("background-day.png").convert()
 floorSurface = pygame.image.load("base.png").convert()
 birdSurface = pygame.image.load("bluebird-midflap.png").convert()
-birdRect = birdSurface.get_rect(center = (width/2, height/2))
+birdRect = birdSurface.get_rect(center = (width/2-100, height/2))
 pipeSurface = pygame.image.load("pipe-green.png").convert()
 
 
@@ -20,8 +20,23 @@ pipeSurface = pygame.image.load("pipe-green.png").convert()
 
 SPAWNPIPE = pygame.USEREVENT  #USEREVENT dziala tak jak event loop,  zmienna spawnpipe to nosi nazwe tego wydarzenia
 pygame.time.set_timer(SPAWNPIPE, 1200)   #ustalenie co ile czasu wydarzenie spawnpipe bedzie sie powtarzalo
+pipeList = []
 
 
+def createPipe():
+    newPipe = pipeSurface.get_rect(center = (width+200, height- int(height*0.4)))
+    return  newPipe
+
+def movePipes(pipes):
+    for pipe in pipes:
+        pipe.centerx -= 5
+    return  pipes
+
+
+def drawPipes():
+    for i in pipeList:
+
+        screen.blit(pipeSurface, i)
 
 
 
@@ -52,8 +67,10 @@ while True:
                 birdMovement = 0
                 birdMovement -=12
 
+        #evry time this ivent below is triggered we wannt to create a pipe
         if event.type == SPAWNPIPE:
-            print("pipe")
+            pipeList.append(createPipe())
+
 
 
     screen.blit(bgSurface, (0,0))
@@ -62,9 +79,14 @@ while True:
     if floorXPos <-width:
         floorXPos =0
 
-
+    #bird
     birdRect.centery +=birdMovement
     screen.blit(birdSurface, birdRect)
     clock.tick(60)
     birdMovement+=gravity
+
+    #pipes
+    pipeList = movePipes(pipeList)
+    drawPipes()
+
     pygame.display.update()
