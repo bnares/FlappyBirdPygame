@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 
 pygame.init()
 
@@ -22,10 +22,14 @@ SPAWNPIPE = pygame.USEREVENT  #USEREVENT dziala tak jak event loop,  zmienna spa
 pygame.time.set_timer(SPAWNPIPE, 1200)   #ustalenie co ile czasu wydarzenie spawnpipe bedzie sie powtarzalo
 pipeList = []
 
+pipeHeight = [100,200,300]  #random pipe heights
+
 
 def createPipe():
-    newPipe = pipeSurface.get_rect(center = (width+200, height- int(height*0.4)))
-    return  newPipe
+    randomPipePos = random.choice(pipeHeight) #choose height
+    bottomPipe = pipeSurface.get_rect(midtop = (width+200, height- randomPipePos))
+    topPipe = pipeSurface.get_rect(midbottom = (width+200, height-randomPipePos-150))
+    return bottomPipe, topPipe
 
 def movePipes(pipes):
     for pipe in pipes:
@@ -36,7 +40,11 @@ def movePipes(pipes):
 def drawPipes():
     for i in pipeList:
 
-        screen.blit(pipeSurface, i)
+        if i.bottom>=height-100:
+            screen.blit(pipeSurface, i)
+        else:
+            flipPipe = pygame.transform.flip(pipeSurface, False,True)
+            screen.blit(flipPipe,i)
 
 
 
@@ -69,7 +77,7 @@ while True:
 
         #evry time this ivent below is triggered we wannt to create a pipe
         if event.type == SPAWNPIPE:
-            pipeList.append(createPipe())
+            pipeList.extend(createPipe())
 
 
 
