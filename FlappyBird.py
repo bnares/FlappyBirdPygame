@@ -2,6 +2,7 @@ import pygame, sys, random
 
 pygame.init()
 
+gameActive = True
 width = 280
 height = 510
 screen = pygame.display.set_mode((width,height))
@@ -46,6 +47,22 @@ def drawPipes():
             flipPipe = pygame.transform.flip(pipeSurface, False,True)
             screen.blit(flipPipe,i)
 
+#checking collision
+
+def checkCollision():
+    for pipe in pipeList:
+        if birdRect.colliderect(pipe):
+            print("COLISION")
+            return False
+
+
+        if birdRect.top<-100 or birdRect.bottom>height-50:
+            print("over the pipe")
+            return False
+    return True
+
+
+
 
 
 #increment values
@@ -71,9 +88,14 @@ while True:
             sys.exit()
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and gameActive:
                 birdMovement = 0
-                birdMovement -=12
+                birdMovement -=9
+            if event.key == pygame.K_SPACE and gameActive == False:
+                birdRect = birdSurface.get_rect(center = (width/2-100, height/2))
+                birdMovement = 0
+                pipeList.clear()
+                gameActive =True
 
         #evry time this ivent below is triggered we wannt to create a pipe
         if event.type == SPAWNPIPE:
@@ -82,19 +104,24 @@ while True:
 
 
     screen.blit(bgSurface, (0,0))
+    #floor
     drawFloor()
     floorXPos -=1
     if floorXPos <-width:
         floorXPos =0
 
-    #bird
-    birdRect.centery +=birdMovement
-    screen.blit(birdSurface, birdRect)
-    clock.tick(60)
-    birdMovement+=gravity
+    if gameActive:
 
-    #pipes
-    pipeList = movePipes(pipeList)
-    drawPipes()
+        #bird
+        birdRect.centery +=birdMovement
+        screen.blit(birdSurface, birdRect)
+        birdMovement+=gravity
+
+        #pipes
+        pipeList = movePipes(pipeList)
+        drawPipes()
+    gameActive = checkCollision()
+
 
     pygame.display.update()
+    clock.tick(60)
