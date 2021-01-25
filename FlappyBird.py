@@ -82,6 +82,7 @@ def checkCollision():
 floorXPos = 0
 gravity = 0.25
 birdMovement = 0
+score =0
 
 
 def drawFloor():
@@ -99,7 +100,11 @@ def birdAnimation():
     return newBirdSurface, newbirdRect
 
 
-
+def gameScore():
+    gameFont = pygame.font.Font("freesansbold.ttf",40)
+    scoreSurface = gameFont.render(str(score), True, (255,255,255))
+    screRect = scoreSurface.get_rect(center = (width/2, 30))
+    screen.blit(scoreSurface, screRect)
 
 
 while True:
@@ -153,6 +158,6 @@ while True:
         drawPipes()
     gameActive = checkCollision()
 
-
+    gameScore()
     pygame.display.update()
     clock.tick(60)
