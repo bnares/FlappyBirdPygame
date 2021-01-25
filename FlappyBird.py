@@ -64,12 +64,12 @@ def drawPipes():
 def checkCollision():
     for pipe in pipeList:
         if birdRect.colliderect(pipe):
-            print("COLISION")
+
             return False
 
 
         if birdRect.top<-100 or birdRect.bottom>height-50:
-            print("over the pipe")
+
             return False
     return True
 
@@ -83,6 +83,7 @@ floorXPos = 0
 gravity = 0.25
 birdMovement = 0
 score =0
+highScore = 0
 
 
 def drawFloor():
@@ -100,12 +101,30 @@ def birdAnimation():
     return newBirdSurface, newbirdRect
 
 
-def gameScore():
-    gameFont = pygame.font.Font("freesansbold.ttf",40)
-    scoreSurface = gameFont.render(str(score), True, (255,255,255))
-    screRect = scoreSurface.get_rect(center = (width/2, 30))
-    screen.blit(scoreSurface, screRect)
+def gameScore(gameState):
+    if gameState == "main_game":
+        gameFont = pygame.font.Font("freesansbold.ttf",40)
+        scoreSurface = gameFont.render(str(int(score)), True, (255,255,255))
+        screRect = scoreSurface.get_rect(center = (width/2, 30))
+        screen.blit(scoreSurface, screRect)
+    if gameState == "game_over":
+        gameFont = pygame.font.Font("freesansbold.ttf", 40)
+        scoreSurface = gameFont.render(str(int(score)), True, (255, 255, 255))
+        screRect = scoreSurface.get_rect(center=(width / 2, 30))
+        screen.blit(scoreSurface, screRect)
 
+        gameFont = pygame.font.Font("freesansbold.ttf", 40)
+        scoreSurface = gameFont.render(str(int(highScore)), True, (255, 255, 255))
+        screRect = scoreSurface.get_rect(center=(width / 2, height-100))
+        screen.blit(scoreSurface, screRect)
+
+
+def updateHighScore(score, highScore):
+    if score>highScore:
+        highScore = score
+        return highScore
+    else:
+        return highScore
 
 while True:
 
@@ -122,6 +141,7 @@ while True:
                 birdRect = birdSurface.get_rect(center = (width/2-100, height/2))
                 birdMovement = 0
                 pipeList.clear()
+                score =0
                 gameActive =True
 
         #evry time this ivent below is triggered we wannt to create a pipe
@@ -147,7 +167,7 @@ while True:
         floorXPos =0
 
     if gameActive:
-
+        score += 0.01
         #bird
         birdRect.centery +=birdMovement
         screen.blit(rotateBird(), birdRect)
@@ -156,8 +176,12 @@ while True:
         #pipes
         pipeList = movePipes(pipeList)
         drawPipes()
+        gameScore("main_game")
+    else:
+        gameScore("game_over")
     gameActive = checkCollision()
 
-    gameScore()
+
+    highScore = updateHighScore(score, highScore)
     pygame.display.update()
     clock.tick(60)
