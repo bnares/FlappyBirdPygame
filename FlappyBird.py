@@ -12,9 +12,21 @@ clock = pygame.time.Clock()
 #importy zdjec
 bgSurface = pygame.image.load("background-day.png").convert()
 floorSurface = pygame.image.load("base.png").convert()
-birdSurface = pygame.image.load("bluebird-midflap.png").convert()
-birdRect = birdSurface.get_rect(center = (width/2-100, height/2))
 pipeSurface = pygame.image.load("pipe-green.png").convert()
+
+birdDownflap = pygame.image.load("bluebird-downflap.png").convert_alpha()
+birdMidflap = pygame.image.load("bluebird-midflap.png").convert_alpha()
+birdUpflap = pygame.image.load("bluebird-upflap.png").convert_alpha()
+
+#bird animation
+birdFrames = [birdDownflap, birdMidflap, birdUpflap]
+birdIndex = 0
+birdSurface = birdFrames[birdIndex]
+birdRect = birdSurface.get_rect(center = (width/2-100, height/2))
+birdEvent = pygame.USEREVENT +1
+pygame.time.set_timer(birdEvent,200)
+
+
 
 
 #ustawiania timera w grze ktora co wyznaczony czas w milsek bedzie uruchamial jakies zdarzenie - pojawienie sie obrazka z rura
@@ -77,6 +89,16 @@ def drawFloor():
     screen.blit(floorSurface, (floorXPos+width, height-50))
 
 
+def rotateBird():
+    rotation = pygame.transform.rotozoom(birdSurface, -birdMovement*3,1)
+    return rotation
+
+def birdAnimation():
+    newBirdSurface = birdFrames[birdIndex]
+    newbirdRect = newBirdSurface.get_rect(center = (width/2-100, birdRect.y))
+    return newBirdSurface, newbirdRect
+
+
 
 
 
@@ -100,6 +122,15 @@ while True:
         #evry time this ivent below is triggered we wannt to create a pipe
         if event.type == SPAWNPIPE:
             pipeList.extend(createPipe())
+        if event.type == birdEvent:
+
+            if birdIndex<2:
+                birdIndex+=1
+            else:
+                birdIndex =0
+
+            birdSurface, birdRect = birdAnimation()
+
 
 
 
@@ -114,7 +145,7 @@ while True:
 
         #bird
         birdRect.centery +=birdMovement
-        screen.blit(birdSurface, birdRect)
+        screen.blit(rotateBird(), birdRect)
         birdMovement+=gravity
 
         #pipes
